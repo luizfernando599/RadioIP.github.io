@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectando ao Servidor...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            text-align: center;
+        }
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #00ff88;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div>
+        <div class="loader"></div>
+        <h2 id="status">Buscando o servidor mais recente...</h2>
+        <p>Aguarde um momento.</p>
+    </div>
+
+    <script>
+        async function fetchNewURL() {
+            try {
+                // O Date.now() força o navegador a pegar a versão mais nova do arquivo, ignorando o cache
+                const response = await fetch(`url.json?t=${Date.now()}`);
+                const data = await response.json();
+                
+                if (data && data.url) {
+                    document.getElementById('status').innerText = "Servidor encontrado! Redirecionando...";
+                    // Redireciona o usuário para a URL do Pinggy
+                    window.location.href = data.url;
+                } else {
+                    document.getElementById('status').innerText = "Erro: URL não encontrada no arquivo.";
+                }
+            } catch (error) {
+                console.error("Erro ao buscar a URL:", error);
+                document.getElementById('status').innerText = "Servidor offline no momento. Tente novamente mais tarde.";
+            }
+        }
+
+        // Executa a função assim que a página carrega
+        window.onload = fetchNewURL;
+    </script>
+</body>
+</html>
